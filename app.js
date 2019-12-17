@@ -5,8 +5,23 @@ var app = express();
 var bodyParse = require('body-parser');
 var cookieParser = require('cookie-parser');
 var utils = require("./utils")
+//第一种
+// var fs = require("fs")
+// app.use('/index.html',function(req,res){
+//   var fileName="./index.html";
+//   fs.readFile(fileName,function(err,data){
+//       if(err)
+//           console.log("对不起，您所访问的路径出错");
+//       else{
+//           res.write(data);
+//       }
+//   })
+// })
 
-var jsonData = require('./data.json')
+//第二种
+var exStatic = require("express-static");
+app.use(exStatic('./')); //这一句中的'./'是静态页面的相对路径。
+
 //端口号
 var port = 3000
 
@@ -18,7 +33,7 @@ app.use(express.static('public'));
 
 // 解决跨域问题
 app.all('*', function (req, res, next) {
-  console.log(req);
+  // console.log(req);
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With, authKey, sessionid');
   // res.header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, authKey, sessionId");
@@ -32,34 +47,6 @@ app.all('*', function (req, res, next) {
     next();
   }
 });
-
-// mock 数据写法
-// 获取注册用户列表
-app.get('/user/list', function (req, res) {
-  var result = {};
-  result.data = jsonData.userList;
-  result.errcode = 0;
-  result.errmsg = '';
-  res.end(JSON.stringify(result));
-})
-
-// 审核注册用户
-app.post('/user/audit/1', function (req, res) {
-  var result = {};
-  result.data = jsonData.audit;
-  result.errcode = 0;
-  result.errmsg = '';
-  res.end(JSON.stringify(result));
-})
-
-// 获取考试列表
-app.get('/exam/getlist', function (req, res) {
-  var result = {};
-  result.data = jsonData.examList;
-  result.errcode = 0;
-  result.errmsg = '';
-  res.end(JSON.stringify(result));
-})
 
 // 监听3000端口
 var server = app.listen(port, utils.getIPAdress(), function () {
